@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">List New E-Waste Item</div>
+            <div class="card-body">
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Common Details -->
+                    <div class="mb-3">
+                        <label>Item Title</label>
+                        <input type="text" name="title" class="form-control" required placeholder="e.g. Old Dell Monitor">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="3"></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Weight (Kg)</label>
+                            <input type="number" step="0.1" name="weight" class="form-control" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Pickup Pincode</label>
+                            <input type="text" name="pincode" class="form-control" value="{{ user.pincode }}" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Upload Image</label>
+                        <input type="file" name="image" class="form-control" accept="image/*" required>
+                    </div>
+
+                    <hr>
+
+                    <!-- Type Selection -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Listing Type</label>
+                        <select name="listing_type" id="listingType" class="form-select" onchange="toggleAuctionFields()">
+                            <option value="FIXED">Fixed Price</option>
+                            <option value="AUCTION">Auction / Bidding</option>
+                        </select>
+                    </div>
+
+                    <!-- Price Input (Changes label based on type) -->
+                    <div class="mb-3">
+                        <label id="priceLabel">Selling Price ($)</label>
+                        <input type="number" step="0.01" name="base_price" class="form-control" required>
+                    </div>
+
+                    <!-- Auction Specific Fields (Hidden by default) -->
+                    <div id="auctionFields" style="display: none;">
+                        <div class="mb-3">
+                            <label>Buyout Price ($) (Optional)</label>
+                            <input type="number" step="0.01" name="buyout_price" class="form-control" placeholder="Instant sell price">
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Auction End Date & Time</label>
+                            <input type="datetime-local" name="end_date" class="form-control">
+                            <small class="text-muted">Max 30 days from today.</small>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 mt-3">List Item</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleAuctionFields() {
+        var type = document.getElementById("listingType").value;
+        var fields = document.getElementById("auctionFields");
+        var label = document.getElementById("priceLabel");
+
+        if (type === "AUCTION") {
+            fields.style.display = "block";
+            label.innerText = "Starting Bid Price ($)";
+        } else {
+            fields.style.display = "none";
+            label.innerText = "Selling Price ($)";
+        }
+    }
+</script>
+{% endblock %}

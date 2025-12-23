@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <strong>Recycler Verification</strong>
+            </div>
+            <div class="card-body">
+                <p>To access the marketplace as a recycler, you must upload proof of registration.</p>
+                
+                <!-- Status Info -->
+                <div class="alert alert-info">
+                    Current Status: <strong>{{ profile.get_status_display }}</strong><br>
+                    Rejections: {{ profile.rejection_count }} / 3
+                </div>
+
+                {% if profile.rejection_reason %}
+                <div class="alert alert-danger">
+                    <strong>Last Rejection Reason:</strong> {{ profile.rejection_reason }}
+                </div>
+                {% endif %}
+
+                <!-- Important: enctype is needed for File Uploads -->
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label>Company / Organization Name</label>
+                        <input type="text" name="company_name" class="form-control" 
+                               value="{{ profile.company_name }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Upload Registration Document (PDF/Image)</label>
+                        <input type="file" name="registration_doc" class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark">Submit for Verification</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

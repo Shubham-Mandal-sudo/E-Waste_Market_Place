@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="text-center">
+    <h1>Welcome to the E-Waste Marketplace</h1>
+    <p>Sell your e-waste directly to recyclers or bid on items.</p>
+    
+    {% if user.is_authenticated %}
+        {% if user.is_seller %}
+            <div class="alert alert-info">You are logged in as a <strong>Seller</strong>.</div>
+        {% elif user.recycler_profile %}
+            <div class="alert alert-warning">
+                You are registered as a <strong>Recycler</strong>.<br>
+                Status: {{ user.recycler_profile.status }}
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}
